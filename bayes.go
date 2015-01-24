@@ -1,39 +1,69 @@
 package main
 
-type NaiveBayes map[string]map[string]uint
+type NaiveBayes struct {
+	classes []string
+	counts  map[int]uint
+	models  map[int]map[string]uint
+}
 
-func (nb NaiveBayes) Learn(class string, words []string) {
-	for _, word := range words {
-		wordModel, exists := nb[word]
-		if !exists {
-			wordModel = make(map[string]uint)
-			nb[word] = wordModel
-		}
-
-		wordModel[class]++
+func NewNaiveBayes() *NaiveBayes {
+	return &NaiveBayes{
+		counts: make(map[int]uint),
+		models: make(map[int]map[string]uint),
 	}
 }
 
-func (nb NaiveBayes) Classify(words []string) map[string]float64 {
-	total := uint(0)
-	counts := make(map[string]uint)
+func (nb *NaiveBayes) GetClassLabel(id int) string {
+	if id < len(nb.classes) {
+		return nb.classes[id]
+	}
+
+	return ""
+}
+
+func (nb *NaiveBayes) Learn(class string, words []string) {
+	classID := -1
+	for id, label := range nb.classes {
+		if class == label {
+			classID = id
+			break
+		}
+	}
+	if classID == -1 {
+		classID = len(nb.classes)
+		nb.classes = append(nb.classes, class)
+	}
+
+	classModel, exists := nb.models[classID]
+	if !exists {
+		classModel = make(map[string]uint)
+		nb.models[classID] = classModel
+	}
 
 	for _, word := range words {
-		wordModel, exists := nb[word]
-		if !exists {
-			continue
+		classModel[word]++
+		nb.counts[classID]++
+	}
+}
+
+func (nb *NaiveBayes) Classify(words []string) map[int]float64 {
+	probs := make(map[int]float64)
+	var norm float64
+	for id, model := range nb.models {
+		var p float64
+		for _, word := range words {
+			p += float64(model[word])
 		}
 
-		for class, count := range wordModel {
-			counts[class] += count
-			total += count
-		}
+		p /= float64(nb.counts[id])
+
+		probs[id] = p
+		norm += p
 	}
 
-	probabilities := make(map[string]float64)
-	for class, count := range counts {
-		probabilities[class] = float64(count) / float64(total)
+	for id, p := range probs {
+		probs[id] = p / norm
 	}
 
-	return probabilities
+	return probs
 }

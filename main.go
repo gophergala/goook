@@ -17,13 +17,14 @@ func main() {
 	fmt.Println(test)
 	fmt.Println(test.Depth())
 
-	nb := make(NaiveBayes)
+	nb := NewNaiveBayes()
 	nb.Learn("ham", []string{"hello", "world", "fun"})
 	nb.Learn("spam", []string{"viagra", "fat", "prince"})
 
 	fmt.Println(nb.Classify([]string{"hello", "world"}))
 	fmt.Println(nb.Classify([]string{"hello", "viagra"}))
 	fmt.Println(nb.Classify([]string{"viagra", "prince"}))
+	fmt.Println(nb.Classify([]string{"hello", "viagra", "prince"}))
 
 	tree := NewLearnTree(3)
 	fmt.Println(*tree)
