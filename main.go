@@ -28,4 +28,12 @@ func main() {
 
 	tree := NewLearnTree(3)
 	fmt.Println(*tree)
+
+	testData := make(map[int][]string)
+
+	for i := 0; i < 1000; i++ {
+		testData[i] = []string{fmt.Sprintf("%d", i)}
+	}
+
+	tree.TrainTree(0, testData)
 }

@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 type LearnTree struct {
 	Depth      int
 	Classifier *NaiveBayes
@@ -7,11 +9,11 @@ type LearnTree struct {
 }
 
 func NewLearnTree(depth int) *LearnTree {
-	if depth == 0 {
+	if depth < 0 {
 		return nil
 	}
 
-	var nc NaiveBayes
+	var nc NaiveBayes // TODO:make
 	t := &LearnTree{
 		Depth:      depth,
 		Classifier: &nc,
@@ -23,4 +25,25 @@ func NewLearnTree(depth int) *LearnTree {
 	}
 
 	return t
+}
+
+func (classifier *NaiveBayes) trainForPath(path, depth int, data map[int][]string) {
+
+	for classID, _ := range data {
+		if classID/10^depth == path {
+			// classifier.Learn(cl, words)
+			fmt.Printf("Treated path %d\n", path)
+		}
+	}
+}
+
+func (tree *LearnTree) TrainTree(path int, data map[int][]string) {
+	if tree.Depth <= 0 {
+		return
+	}
+
+	for i, child := range tree.Children {
+		child.Classifier.trainForPath(path*10+i, tree.Depth, data)
+		child.TrainTree(path*10+i, data)
+	}
 }
