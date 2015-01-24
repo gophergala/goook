@@ -25,6 +25,6 @@ func main() {
 	fmt.Println(nb.Classify([]string{"hello", "viagra"}))
 	fmt.Println(nb.Classify([]string{"viagra", "prince"}))
 
-	tree := NewLearnTree(3, 9)
+	tree := NewLearnTree(3)
 	fmt.Println(*tree)
 }

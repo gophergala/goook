@@ -3,10 +3,10 @@ package main
 type LearnTree struct {
 	Depth      int
 	Classifier *NaiveBayes
-	Children   []*LearnTree
+	Children   map[int]*LearnTree
 }
 
-func NewLearnTree(depth, arity int) *LearnTree {
+func NewLearnTree(depth int) *LearnTree {
 	if depth == 0 {
 		return nil
 	}
@@ -15,10 +15,12 @@ func NewLearnTree(depth, arity int) *LearnTree {
 	t := &LearnTree{
 		Depth:      depth,
 		Classifier: &nc,
-		Children:   make([]*LearnTree, arity),
+		Children:   make(map[int]*LearnTree),
 	}
-	for i := 0; i < arity; i++ {
-		t.Children[i] = NewLearnTree(depth-1, arity)
+
+	for i := 0; i < 10; i++ {
+		t.Children[i] = NewLearnTree(depth - 1)
 	}
+
 	return t
 }
