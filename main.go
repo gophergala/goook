@@ -12,4 +12,8 @@ func main() {
 	}
 
 	fmt.Println(ddc)
+
+	test := Class{111, "Hello"}
+	fmt.Println(test)
+	fmt.Println(test.Depth())
 }

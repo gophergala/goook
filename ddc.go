@@ -8,13 +8,24 @@ import (
 	"strings"
 )
 
-type DDC struct {
-	Classes map[int]*Class
-}
-
 type Class struct {
 	ID   int
 	Name string
+}
+
+func (c *Class) Depth() int {
+	id, depth := c.ID, 2
+	for {
+		if id%10 != 0 {
+			return depth
+		}
+		depth--
+		id /= 10
+	}
+}
+
+type DDC struct {
+	Classes map[int]*Class
 }
 
 func LoadDDC(path string) (*DDC, error) {
