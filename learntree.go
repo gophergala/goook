@@ -13,10 +13,10 @@ func NewLearnTree(depth int) *LearnTree {
 		return nil
 	}
 
-	var nc NaiveBayes // TODO:make
+	nc := NewNaiveBayes()
 	t := &LearnTree{
 		Depth:      depth,
-		Classifier: &nc,
+		Classifier: nc,
 		Children:   make(map[int]*LearnTree),
 	}
 
