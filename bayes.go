@@ -1,9 +1,8 @@
 package main
 
 type NaiveBayes struct {
-	classes []string
-	counts  map[int]uint
-	models  map[int]map[string]uint
+	counts map[int]uint
+	models map[int]map[string]uint
 }
 
 func NewNaiveBayes() *NaiveBayes {
@@ -13,36 +12,16 @@ func NewNaiveBayes() *NaiveBayes {
 	}
 }
 
-func (nb *NaiveBayes) GetClassLabel(id int) string {
-	if id < len(nb.classes) {
-		return nb.classes[id]
-	}
-
-	return ""
-}
-
-func (nb *NaiveBayes) Learn(class string, words []string) {
-	classID := -1
-	for id, label := range nb.classes {
-		if class == label {
-			classID = id
-			break
-		}
-	}
-	if classID == -1 {
-		classID = len(nb.classes)
-		nb.classes = append(nb.classes, class)
-	}
-
-	classModel, exists := nb.models[classID]
+func (nb *NaiveBayes) Learn(class int, words []string) {
+	classModel, exists := nb.models[class]
 	if !exists {
 		classModel = make(map[string]uint)
-		nb.models[classID] = classModel
+		nb.models[class] = classModel
 	}
 
 	for _, word := range words {
 		classModel[word]++
-		nb.counts[classID]++
+		nb.counts[class]++
 	}
 }
 

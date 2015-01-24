@@ -18,8 +18,8 @@ func main() {
 	fmt.Println(test.Depth())
 
 	nb := NewNaiveBayes()
-	nb.Learn("ham", []string{"hello", "world", "fun"})
-	nb.Learn("spam", []string{"viagra", "fat", "prince"})
+	nb.Learn(1337, []string{"hello", "world", "fun"})
+	nb.Learn(666, []string{"viagra", "fat", "prince"})
 
 	fmt.Println(nb.Classify([]string{"hello", "world"}))
 	fmt.Println(nb.Classify([]string{"hello", "viagra"}))
