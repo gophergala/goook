@@ -16,4 +16,7 @@ func main() {
 	test := Class{111, "Hello"}
 	fmt.Println(test)
 	fmt.Println(test.Depth())
+
+	tree := NewLearnTree(3, 9)
+	fmt.Println(*tree)
 }
