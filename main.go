@@ -11,8 +11,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	_ = ddc
-
 	test := Class{111, "Hello"}
 	fmt.Println(test)
 	fmt.Println(test.Depth())
@@ -26,14 +24,14 @@ func main() {
 	fmt.Println(nb.Classify([]string{"viagra", "prince"}))
 	fmt.Println(nb.Classify([]string{"hello", "viagra", "prince"}))
 
-	tree := NewLearnTree(3)
-	fmt.Println(*tree)
+	tree := NewTreeBayes()
 
-	testData := make(map[int][]string)
-
-	for i := 0; i < 1000; i++ {
-		testData[i] = []string{fmt.Sprintf("%d", i)}
+	fmt.Println("Learning")
+	for id := range ddc.Classes {
+		tree.Learn(id, []string{fmt.Sprintf("%d", id)})
 	}
 
-	tree.TrainTree(0, testData)
+	fmt.Println("Classifying")
+	class, prob := tree.Classify([]string{"100", "120", "123"}, .5)
+	fmt.Println("Class =", class, " / P = ", prob)
 }

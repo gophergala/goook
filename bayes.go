@@ -1,5 +1,7 @@
 package main
 
+import "sort"
+
 type NaiveBayes struct {
 	counts map[int]uint
 	models map[int]map[string]uint
@@ -25,7 +27,7 @@ func (nb *NaiveBayes) Learn(class int, words []string) {
 	}
 }
 
-func (nb *NaiveBayes) Classify(words []string) map[int]float64 {
+func (nb *NaiveBayes) Classify(words []string) Probabilities {
 	probs := make(map[int]float64)
 	var norm float64
 	for id, model := range nb.models {
@@ -40,9 +42,26 @@ func (nb *NaiveBayes) Classify(words []string) map[int]float64 {
 		norm += p
 	}
 
+	var ps Probabilities
 	for id, p := range probs {
-		probs[id] = p / norm
+		ps = append(ps, Probability{
+			Class: id,
+			P:     p / norm,
+		})
 	}
 
-	return probs
+	sort.Sort(ps)
+
+	return ps
 }
+
+type Probability struct {
+	Class int
+	P     float64
+}
+
+type Probabilities []Probability
+
+func (ps Probabilities) Len() int           { return len(ps) }
+func (ps Probabilities) Swap(i, j int)      { ps[i], ps[j] = ps[j], ps[i] }
+func (ps Probabilities) Less(i, j int) bool { return ps[j].P < ps[i].P }

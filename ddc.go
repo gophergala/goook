@@ -15,13 +15,12 @@ type Class struct {
 
 func (c *Class) Depth() int {
 	id, depth := c.ID, 2
-	for {
-		if id%10 != 0 {
-			return depth
-		}
+	for depth > 0 && id%10 == 0 {
 		depth--
 		id /= 10
 	}
+
+	return depth
 }
 
 type DDC struct {
