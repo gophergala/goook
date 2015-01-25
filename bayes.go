@@ -2,6 +2,10 @@ package main
 
 import "sort"
 
+const (
+	Epsilon = 0.000001
+)
+
 type NaiveBayes struct {
 	counts map[int]uint
 	models map[int]map[string]uint
@@ -15,6 +19,10 @@ func NewNaiveBayes() *NaiveBayes {
 }
 
 func (nb *NaiveBayes) Learn(class int, words []string) {
+	if len(words) == 0 {
+		return
+	}
+
 	classModel, exists := nb.models[class]
 	if !exists {
 		classModel = make(map[string]uint)
@@ -37,6 +45,10 @@ func (nb *NaiveBayes) Classify(words []string) Probabilities {
 		}
 
 		p /= float64(nb.counts[id])
+
+		if p < Epsilon {
+			continue
+		}
 
 		probs[id] = p
 		norm += p
