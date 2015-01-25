@@ -35,5 +35,5 @@ func main() {
 		testData[i] = []string{fmt.Sprintf("%d", i)}
 	}
 
-	tree.TrainTree(0, testData)
+	//tree.TrainTree(0, testData)
 }

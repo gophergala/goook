@@ -1,49 +1,49 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type LearnTree struct {
-	Depth      int
-	Classifier *NaiveBayes
-	Children   map[int]*LearnTree
+	Height          int
+	NodeHeights     map[int]int
+	NodeClassifiers map[int]*NaiveBayes
 }
 
-func NewLearnTree(depth int) *LearnTree {
-	if depth < 0 {
-		return nil
+func pow(a, b int) int {
+	res := a
+	for i := 1; i < b; i++ {
+		res *= a
 	}
-
-	nc := NewNaiveBayes()
-	t := &LearnTree{
-		Depth:      depth,
-		Classifier: nc,
-		Children:   make(map[int]*LearnTree),
-	}
-
-	for i := 0; i < 10; i++ {
-		t.Children[i] = NewLearnTree(depth - 1)
-	}
-
-	return t
+	return res
 }
 
-func (classifier *NaiveBayes) trainForPath(path, depth int, data map[int][]string) {
+func NewLearnTree(height int) *LearnTree {
 
-	for classID, _ := range data {
-		if classID/10^depth == path {
-			// classifier.Learn(cl, words)
-			fmt.Printf("Treated path %d\n", path)
-		}
+	tree := &LearnTree{
+		Height:          height,
+		NodeHeights:     make(map[int]int),
+		NodeClassifiers: make(map[int]*NaiveBayes),
 	}
+
+	// All the classes that are in the order of `depth` are leaves, so
+	// they won't contain a classifier.
+	for i := 0; i < pow(10, height-1); i++ {
+		fmt.Println(i)
+		tree.NodeClassifiers[i] = NewNaiveBayes()
+	}
+
+	return tree
 }
 
 func (tree *LearnTree) TrainTree(path int, data map[int][]string) {
-	if tree.Depth <= 0 {
-		return
-	}
-
-	for i, child := range tree.Children {
-		child.Classifier.trainForPath(path*10+i, tree.Depth, data)
-		child.TrainTree(path*10+i, data)
+	// For each node that contains a classifier
+	for path, classifier := range tree.NodeClassifiers {
+		// If the node/path is 22, we shall train the model on the classes like 22*
+		for classID, words := range data {
+			if classID/tree.NodeHeights[path] == path {
+				classifier.Learn(classID, words)
+			}
+		}
 	}
 }
