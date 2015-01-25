@@ -1,9 +1,5 @@
 package main
 
-import (
-	"fmt"
-)
-
 type LearnTree struct {
 	Height          int
 	NodeHeights     map[int]int
@@ -18,6 +14,15 @@ func pow(a, b int) int {
 	return res
 }
 
+func getDepth(path int) int {
+	depth := 3
+	for path/10 != 0 {
+		depth--
+		path /= 10
+	}
+	return depth
+}
+
 func NewLearnTree(height int) *LearnTree {
 
 	tree := &LearnTree{
@@ -29,7 +34,7 @@ func NewLearnTree(height int) *LearnTree {
 	// All the classes that are in the order of `depth` are leaves, so
 	// they won't contain a classifier.
 	for i := 0; i < pow(10, height-1); i++ {
-		fmt.Println(i)
+		tree.NodeHeights[i] = getDepth(i)
 		tree.NodeClassifiers[i] = NewNaiveBayes()
 	}
 
@@ -41,7 +46,7 @@ func (tree *LearnTree) TrainTree(path int, data map[int][]string) {
 	for path, classifier := range tree.NodeClassifiers {
 		// If the node/path is 22, we shall train the model on the classes like 22*
 		for classID, words := range data {
-			if classID/tree.NodeHeights[path] == path {
+			if classID/pow(10, tree.NodeHeights[path]) == path {
 				classifier.Learn(classID, words)
 			}
 		}
